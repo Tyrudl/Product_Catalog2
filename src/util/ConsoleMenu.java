@@ -23,10 +23,11 @@ public class ConsoleMenu {
         System.out.println("1. Добавить товар");
         System.out.println("2. Поиск товаров");
         System.out.println("3. Показать все товары");
-        System.out.println("4. Статистика товаров");  // ← НОВЫЙ ПУНКТ
-        System.out.println("5. Статистика кэша");
-        System.out.println("6. Метрики системы");
-        System.out.println("7. Выйти из системы");
+        System.out.println("4. Удалить товар");
+        System.out.println("5. Статистика товаров");
+        System.out.println("6. Статистика кэша");
+        System.out.println("7. Метрики системы");
+        System.out.println("8. Выйти из системы");
         System.out.print("Выберите действие: ");
     }
 
@@ -100,5 +101,6 @@ public class ConsoleMenu {
                     " | 📁 " + product.getCategory() +
                     " | #" + product.getId());
         }
+        System.out.println("=================================");
     }
 }

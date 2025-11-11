@@ -147,4 +147,13 @@ public class ProductService {
     public void showMetrics() {
         metricsService.showMetrics();
     }
+
+    public boolean deleteProduct(String id, String username) {
+        boolean deleted = storage.deleteProduct(id);
+        if (deleted) {
+            searchCache.clear();
+            auditService.logProductAction(username, "УДАЛЕН товар", "ID: " + id);
+        }
+        return deleted;
+    }
 }

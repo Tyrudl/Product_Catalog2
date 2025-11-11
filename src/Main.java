@@ -68,9 +68,11 @@ public class Main {
                 case 1 -> addNewProduct();
                 case 2 -> searchProducts();
                 case 3 -> showAllProducts();
-                case 4 -> showCacheStats();
-                case 5 -> showMetrics();
-                case 6 -> {
+                case 4 -> deleteProduct();
+                case 5 -> showProductStatistics();
+                case 6 -> showCacheStats();
+                case 7 -> showMetrics();
+                case 8 -> {
                     authService.logout();
                     menu.showMessage("Вы вышли из системы");
                     return;
@@ -101,16 +103,41 @@ public class Main {
             menu.showSearchMenu();
             int searchChoice = menu.getChoice();
 
-            switch (searchChoice) {
-                case 1 -> searchById();
-                case 2 -> searchByName();
-                case 3 -> searchByCategory();
-                case 4 -> searchByBrand();
-                case 5 -> searchByPriceRange();
-                case 6 -> { return; }
+            switch (searchChoice) { // ИСПРАВЛЕНО: было switch (choice)
+                case 1 -> addNewProduct();
+                case 2 -> searchProducts();
+                case 3 -> showAllProducts();
+                case 4 -> deleteProduct();
+                case 5 -> showProductStatistics();
+                case 6 -> showCacheStats();
+                case 7 -> showMetrics();
+                case 8 -> {
+                    return; // выход из меню поиска
+                }
                 default -> menu.showMessage("Неверный выбор!");
             }
         }
+    }
+
+    // ДОБАВЛЕН отсутствующий метод showAllProducts()
+    private static void showAllProducts() {
+        List<Product> allProducts = productService.getAllProducts();
+        menu.displayProducts(allProducts);
+    }
+
+    // ДОБАВЛЕН отсутствующий метод showProductStatistics()
+    private static void showProductStatistics() {
+        // Реализация показа статистики товаров
+        menu.showMessage("\n=== СТАТИСТИКА ТОВАРОВ ===");
+        // Здесь можно добавить логику для показа статистики
+        List<Product> allProducts = productService.getAllProducts();
+        menu.showMessage("Общее количество товаров: " + allProducts.size());
+
+        // Пример простой статистики
+        double totalValue = allProducts.stream()
+                .mapToDouble(Product::getPrice)
+                .sum();
+        menu.showMessage("Общая стоимость всех товаров: $" + String.format("%.2f", totalValue));
     }
 
     private static void searchById() {
@@ -148,9 +175,12 @@ public class Main {
         menu.displayProducts(products);
     }
 
-    private static void showAllProducts() {
+    private static void showAllProductsWithIds() {
         List<Product> allProducts = productService.getAllProducts();
-        menu.displayProducts(allProducts);
+        menu.showMessage("\n=== ВСЕ ТОВАРЫ С ID ===");
+        for (Product product : allProducts) {
+            menu.showMessage("ID: " + product.getId() + " | " + product.getName() + " | $" + product.getPrice());
+        }
     }
 
     private static void showCacheStats() {
@@ -159,5 +189,40 @@ public class Main {
 
     private static void showMetrics() {
         productService.showMetrics();
+    }
+
+    private static void deleteProduct() {
+        if (authService.getCurrentUsername().equals("guest")) {
+            menu.showMessage("❌ Гости не могут удалять товары!");
+            return;
+        }
+
+        // Сначала покажем все товары с ID
+        showAllProductsWithIds();
+
+        menu.showMessage("\n=== УДАЛЕНИЕ ТОВАРА ===");
+        String id = menu.askString("Введите ID товара для удаления");
+
+        // Проверяем существует ли товар
+        Product productToDelete = productService.findProductById(id);
+        if (productToDelete == null) {
+            menu.showMessage("❌ Товар с ID " + id + " не найден");
+            return;
+        }
+
+        // Подтверждение удаления
+        menu.showMessage("Вы собираетесь удалить: " + productToDelete.getName() + " за $" + productToDelete.getPrice());
+        String confirm = menu.askString("Подтвердите удаление (введите 'yes' для подтверждения)");
+
+        if ("yes".equalsIgnoreCase(confirm)) {
+            boolean deleted = productService.deleteProduct(id, authService.getCurrentUsername());
+            if (deleted) {
+                menu.showMessage("✅ Товар успешно удален!");
+            } else {
+                menu.showMessage("❌ Ошибка при удалении товара");
+            }
+        } else {
+            menu.showMessage("❌ Удаление отменено");
+        }
     }
 }
