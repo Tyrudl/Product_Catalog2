@@ -1,6 +1,8 @@
 package util;
 
 import model.Product;
+
+import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Scanner;
 
@@ -21,9 +23,10 @@ public class ConsoleMenu {
         System.out.println("1. Добавить товар");
         System.out.println("2. Поиск товаров");
         System.out.println("3. Показать все товары");
-        System.out.println("4. Статистика кэша");
-        System.out.println("5. Метрики системы");
-        System.out.println("6. Выйти из системы");
+        System.out.println("4. Статистика товаров");  // ← НОВЫЙ ПУНКТ
+        System.out.println("5. Статистика кэша");
+        System.out.println("6. Метрики системы");
+        System.out.println("7. Выйти из системы");
         System.out.print("Выберите действие: ");
     }
 
@@ -49,9 +52,16 @@ public class ConsoleMenu {
     }
 
     public int getChoice() {
-        int choice = scanner.nextInt();
-        scanner.nextLine();
-        return choice;
+        while (true) {
+            try {
+                int choice = scanner.nextInt();
+                scanner.nextLine(); // очистка буфера
+                return choice;
+            } catch (InputMismatchException e) {
+                System.out.println("❌ Ошибка! Введите число:");
+                scanner.nextLine(); // очистка неверного ввода
+            }
+        }
     }
 
     public String askString(String question) {

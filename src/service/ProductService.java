@@ -5,6 +5,8 @@ import model.Product;
 import storage.ProductStorage;
 import storage.Storage;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.Map;
 
 public class ProductService {
     private ProductStorage storage = new ProductStorage();
