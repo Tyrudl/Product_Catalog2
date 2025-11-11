@@ -82,4 +82,24 @@ public class ProductStorage {
     public int getProductCount() {
         return products.size();
     }
+
+    public boolean deleteProduct(String id) {
+        // Проверяем существует ли товар
+        if (!products.containsKey(id)) {
+            return false;
+        }
+
+        // Удаляем из обеих структур
+        Product removed = products.remove(id);
+        boolean removedFromList = allProducts.removeIf(product -> product.getId().equals(id));
+
+        if (removed != null && removedFromList) {
+            saveToFile(); // Сохраняем изменения
+            System.out.println("✅ Удален товар: " + removed.getName());
+            return true;
+        }
+
+        return false;
+    }
+
 }

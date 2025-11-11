@@ -5,6 +5,8 @@ import model.Product;
 import storage.ProductStorage;
 import storage.Storage;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.Map;
 
 public class ProductService {
     private ProductStorage storage = new ProductStorage();
@@ -144,5 +146,14 @@ public class ProductService {
 
     public void showMetrics() {
         metricsService.showMetrics();
+    }
+
+    public boolean deleteProduct(String id, String username) {
+        boolean deleted = storage.deleteProduct(id);
+        if (deleted) {
+            searchCache.clear();
+            auditService.logProductAction(username, "УДАЛЕН товар", "ID: " + id);
+        }
+        return deleted;
     }
 }

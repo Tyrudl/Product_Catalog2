@@ -1,6 +1,8 @@
 package util;
 
 import model.Product;
+
+import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Scanner;
 
@@ -21,9 +23,11 @@ public class ConsoleMenu {
         System.out.println("1. Добавить товар");
         System.out.println("2. Поиск товаров");
         System.out.println("3. Показать все товары");
-        System.out.println("4. Статистика кэша");
-        System.out.println("5. Метрики системы");
-        System.out.println("6. Выйти из системы");
+        System.out.println("4. Удалить товар");
+        System.out.println("5. Статистика товаров");
+        System.out.println("6. Статистика кэша");
+        System.out.println("7. Метрики системы");
+        System.out.println("8. Выйти из системы");
         System.out.print("Выберите действие: ");
     }
 
@@ -49,9 +53,16 @@ public class ConsoleMenu {
     }
 
     public int getChoice() {
-        int choice = scanner.nextInt();
-        scanner.nextLine();
-        return choice;
+        while (true) {
+            try {
+                int choice = scanner.nextInt();
+                scanner.nextLine(); // очистка буфера
+                return choice;
+            } catch (InputMismatchException e) {
+                System.out.println("❌ Ошибка! Введите число:");
+                scanner.nextLine(); // очистка неверного ввода
+            }
+        }
     }
 
     public String askString(String question) {
@@ -67,7 +78,7 @@ public class ConsoleMenu {
                 input = input.replace(',', '.');
                 return Double.parseDouble(input);
             } catch (NumberFormatException e) {
-                System.out.println("❌ Ошибка! Введите число (например: 999.99 или 999,99)");
+                System.out.println("Ошибка! Введите число (например: 999.99 или 999,99)");
             }
         }
     }
@@ -78,7 +89,7 @@ public class ConsoleMenu {
 
     public void displayProducts(List<Product> products) {
         if (products.isEmpty()) {
-            System.out.println("❌ Товары не найдены");
+            System.out.println("Товары не найдены");
             return;
         }
 
@@ -90,5 +101,6 @@ public class ConsoleMenu {
                     " | 📁 " + product.getCategory() +
                     " | #" + product.getId());
         }
+        System.out.println("=================================");
     }
 }
