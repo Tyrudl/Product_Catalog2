@@ -67,7 +67,7 @@ public class ConsoleMenu {
                 input = input.replace(',', '.');
                 return Double.parseDouble(input);
             } catch (NumberFormatException e) {
-                System.out.println("❌ Ошибка! Введите число (например: 999.99 или 999,99)");
+                System.out.println("Ошибка! Введите число (например: 999.99 или 999,99)");
             }
         }
     }
@@ -78,7 +78,7 @@ public class ConsoleMenu {
 
     public void displayProducts(List<Product> products) {
         if (products.isEmpty()) {
-            System.out.println("❌ Товары не найдены");
+            System.out.println("Товары не найдены");
             return;
         }
 
